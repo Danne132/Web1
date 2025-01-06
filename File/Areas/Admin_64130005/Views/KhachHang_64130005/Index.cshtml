@@ -5,83 +5,6 @@
     Layout = "~/Areas/Admin_64130005/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-@*<h2>Index</h2>
-
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.HoKH)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TenKH)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Emai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MatKhau)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AnhKH)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DiaChi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NgaySinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CCCD)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SDT)
-            </th>
-            <th></th>
-        </tr>
-
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.HoKH)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenKH)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Emai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MatKhau)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AnhKH)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiaChi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NgaySinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CCCD)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SDT)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.MaKH }) |
-                @Html.ActionLink("Details", "Details", new { id=item.MaKH }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.MaKH })
-            </td>
-        </tr>
-    }
-
-    </table>
-*@
-
 <div class="app-title">
     <ul class="app-breadcrumb breadcrumb side">
         <li class="breadcrumb-item active"><a href="#"><b>Danh sách khách hàng</b></a></li>
@@ -146,13 +69,13 @@
                                         @item.FullName()
                                     </td>
                                     <td>
-                                        @if (@item.Email == null)
+                                        @if (@item.Emai == null)
                                         {
                                             <p>Không có email</p>
                                         }
                                         else
                                         {
-                                            @item.Email
+                                            @item.Emai
                                         }
                                     </td>
                                     <td>
@@ -177,7 +100,7 @@
                                     </td>
                                     <td class="table-td-center">
                                         <button class="btn btn-primary btn-sm user-btn" type="button" title="Xem thông tin"
-                                                onclick="location.href='@Url.Action("Detail", "KhachHang_64130005",new { Id = item.idUser })'">
+                                                onclick="location.href='@Url.Action("Details", "KhachHang_64130005",new { MaKH = item.MaKH })'">
                                             <i class="fas fa-user"></i>
                                         </button>
                                     </td>

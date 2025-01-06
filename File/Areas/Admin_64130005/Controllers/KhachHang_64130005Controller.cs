@@ -23,79 +23,31 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
             {
                 return RedirectToAction("Index", "Order");
             }
-            
-            const int pageSize = 5;
-            int pageNumber = page ?? 1;
             var dsKhachHang = db.KhachHangs.ToList();
 
-            // tìm kiếm sản phẩm 
-            if (!String.IsNullOrEmpty(searchStr))
-            {
-                searchStr = searchStr.ToLower();
-                ViewBag.searchStr = searchStr;
-                dsKhachHang = dsKhachHang.Where(p => p.Emai.ToLower().Contains(searchStr)).ToList();
-            }
             // Tìm kiếm khách hàng trong quản lí khách hàng bằng email 
-            /*if (!String.IsNullOrEmpty(searchStr))
+            if (!String.IsNullOrEmpty(searchStr))
             {
                 searchStr = searchStr.ToLower();
                 dsKhachHang = dsKhachHang.Where(s => s.Emai.ToLower().Contains(searchStr)).ToList();
                 ViewBag.dsKh = dsKhachHang;
-            }*/
+            }
             else
             {
                 ViewBag.dsKH = dsKhachHang;
             }
 
-            return View(dsKhachHang);
-        }
-
-        // GET: Admin_64130005/KhachHang_64130005/Details/5
-        public async Task<ActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            KhachHang khachHang = await db.KhachHangs.FindAsync(id);
-            if (khachHang == null)
-            {
-                return HttpNotFound();
-            }
-            return View(khachHang);
-        }
-
-        // GET: Admin_64130005/KhachHang_64130005/Create
-        public ActionResult Create()
-        {
             return View();
         }
 
-        // POST: Admin_64130005/KhachHang_64130005/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "MaKH,HoKH,TenKH,Emai,MatKhau,AnhKH,DiaChi,NgaySinh,CCCD,SDT")] KhachHang khachHang)
+        // GET: Admin_64130005/KhachHang_64130005/Details/5
+        public async Task<ActionResult> Details(string MaKH)
         {
-            if (ModelState.IsValid)
-            {
-                db.KhachHangs.Add(khachHang);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-
-            return View(khachHang);
-        }
-
-        // GET: Admin_64130005/KhachHang_64130005/Edit/5
-        public async Task<ActionResult> Edit(string id)
-        {
-            if (id == null)
+            if (MaKH == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            KhachHang khachHang = await db.KhachHangs.FindAsync(id);
+            KhachHang khachHang = await db.KhachHangs.FindAsync(MaKH);
             if (khachHang == null)
             {
                 return HttpNotFound();
@@ -103,21 +55,7 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
             return View(khachHang);
         }
 
-        // POST: Admin_64130005/KhachHang_64130005/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "MaKH,HoKH,TenKH,Emai,MatKhau,AnhKH,DiaChi,NgaySinh,CCCD,SDT")] KhachHang khachHang)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(khachHang).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(khachHang);
-        }
+      
 
         // GET: Admin_64130005/KhachHang_64130005/Delete/5
         public async Task<ActionResult> Delete(string id)

@@ -5,87 +5,79 @@
     Layout = "~/Areas/Admin_64130005/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>KhachHang</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.HoKH)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HoKH)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TenKH)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TenKH)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Emai)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Emai)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MatKhau)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MatKhau)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AnhKH)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AnhKH)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DiaChi)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DiaChi)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NgaySinh)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NgaySinh)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CCCD)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CCCD)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SDT)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SDT)
-        </dd>
-
-    </dl>
+<div class="app-title">
+    <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item active"><a href="#"><b>Khách hàng: #@Model.MaKH</b></a></li>
+    </ul>
+    <div id="clock"></div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.MaKH }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<div class="row detail">
+    <div class="col-md-4 detail__avatar">
+        <img src="~/Images/KhachHang/@Model.AnhKH" alt="Ảnh đại diện" />
+    </div>
+    <div class="col-md-8">
+        <div class="detail__item">
+            <label class="control-label">Họ và tên: </label>
+            @Model.FullName()
+        </div>
+        <div class="detail__item">
+            <label class="control-label">Email: </label>
+            @Model.Emai
+        </div> <div class="detail__item">
+            <label class="control-label">Địa chỉ thường trú: </label>
+            @Model.DiaChi
+        </div> <div class="detail__item">
+            <label class="control-label">Ngày sinh: </label>
+            @(Model.NgaySinh?.ToString("dd/MM/yyyy"))
+        </div> <div class="detail__item">
+            <label class="control-label">Số điện thoại: </label>
+            @Model.SDT
+        </div>
+        <div class="detail__item">
+            <label class="control-label">Số chứng minh thư: </label>
+            @Model.CCCD
+        </div>
+        <div class="row btn">
+            <button class="btn btn-save btn-sm edit" type="button" title="Sửa"
+                    onclick="location.href='@Url.Action("Edit", "KhachHang_64130005",new { id = Model.MaKH })'">
+                Chỉnh sửa thông tin
+            </button>
+            <a class="btn btn-cancel" href="@Url.Action("Index","KhachHang_64130005")">Hủy bỏ</a>
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+    .detail {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    detail__avatar {
+    }
+
+    .detail__avatar img {
+        height: 80%;
+        width: 80%;
+        object-fit: cover;
+    }
+
+    .detail__item {
+        margin: 20px 0;
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 15px;
+        line-height: 1.5;
+        color: black;
+        background-color: #f1f1f1;
+        background-clip: padding-box;
+        height: 45px;
+        border: 1px solid #dadada;
+        border-radius: .357rem;
+    }
+</style>
