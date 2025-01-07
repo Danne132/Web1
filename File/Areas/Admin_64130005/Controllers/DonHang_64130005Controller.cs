@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Project_64130005.Models;
 using System.Web.Services.Description;
 using System.Web.UI;
+using System.Diagnostics;
 
 namespace Project_64130005.Areas.Admin_64130005.Controllers
 {
@@ -82,13 +83,13 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
         }
 
         // GET: Admin_64130005/DonHang_64130005/Details/5
-        public async Task<ActionResult> Details(string id)
+        public async Task<ActionResult> Details(string MaDH)
         {
-            if (id == null)
+            if (MaDH == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DonHang donHang = await db.DonHangs.FindAsync(id);
+            DonHang donHang = await db.DonHangs.FindAsync(MaDH);
             if (donHang == null)
             {
                 return HttpNotFound();
@@ -98,20 +99,25 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
 
 
         // GET: Admin_64130005/DonHang_64130005/Edit/5
-        public async Task<ActionResult> Edit(string id)
+        public async Task<ActionResult> Edit(string MaDH)
         {
-            if (id == null)
+            if (MaDH == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DonHang donHang = await db.DonHangs.FindAsync(id);
+            DonHang donHang = await db.DonHangs.FindAsync(MaDH);
             if (donHang == null)
             {
                 return HttpNotFound();
             }
             ViewBag.MaKH = new SelectList(db.KhachHangs, "MaKH", "HoKH", donHang.MaKH);
             ViewBag.NVDuyetDon = new SelectList(db.NhanViens, "MaNV", "HoTenNV", donHang.NVDuyetDon);
-            ViewBag.NVGiaoHang = new SelectList(db.NhanViens, "MaNV", "HoTenNV", donHang.NVGiaoHang);
+            ViewBag.NVGiaoHang = new SelectList(
+                db.NhanViens.Where(nv => nv.MaLoaiNV == "BH"),
+                "MaNV",
+                "HoTenNV",
+                donHang.NVGiaoHang
+            );
             ViewBag.MaThanhToan = new SelectList(db.ThanhToans, "MaThanhToan", "TenThanhToan", donHang.MaThanhToan);
             ViewBag.MaTrangThai = new SelectList(db.TrangThaiDHs, "TrangThai", "TrangThai", donHang.MaTrangThai);
             return View(donHang);
@@ -122,17 +128,49 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "MaDH,MaKH,TenNguoiNhan,MaTrangThai,DiaChi,MaThanhToan,NgayDat,NgayGiao,TongTien,TongSoLuong,NVDuyetDon,NVGiaoHang")] DonHang donHang)
-        {
+        public async Task<ActionResult> Edit([Bind(Include = "MaDH, NVGiaoHang")] DonHang donHang)
+        {   
             if (ModelState.IsValid)
             {
-                db.Entry(donHang).State = EntityState.Modified;
+                DonHang order = db.DonHangs.Find(donHang.MaDH);
+                if (order == null)
+                {
+                    return HttpNotFound();
+                }
+                NhanVien nvsession = (NhanVien)Session["NV"];
+                NhanVien nv = db.NhanViens.Find(nvsession.MaNV);
+                order.MaTrangThai = "Đang giao hàng";
+                order.NgayGiao = DateTime.Now.AddDays(3);
+                order.NVDuyetDon = nv.MaNV;
+                order.NVGiaoHang = donHang.NVGiaoHang;
+                Debug.WriteLine(order.MaDH);
+                Debug.WriteLine(order.MaKH);
+                Debug.WriteLine(order.MaTrangThai);
+                Debug.WriteLine(order.NgayGiao);
+                Debug.WriteLine(order.NVDuyetDon);
+                Debug.WriteLine(order.NVGiaoHang);
+                var orderDetails = db.ChiTietDHs.Where(item => item.MaDH == order.MaDH).ToList();
+
+                foreach (var detail in orderDetails)
+                {
+                    Sach product = db.Saches.Find(detail.MaSach);
+                    product.SoLuong -= detail.SoLuong;
+                    product.DaBan += detail.SoLuong;
+                    db.Entry(product).State = EntityState.Modified;
+                }
+                donHang = order;
+                db.Entry(order).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             ViewBag.MaKH = new SelectList(db.KhachHangs, "MaKH", "HoKH", donHang.MaKH);
             ViewBag.NVDuyetDon = new SelectList(db.NhanViens, "MaNV", "HoTenNV", donHang.NVDuyetDon);
-            ViewBag.NVGiaoHang = new SelectList(db.NhanViens, "MaNV", "HoTenNV", donHang.NVGiaoHang);
+            ViewBag.NVGiaoHang = new SelectList(
+               db.NhanViens.Where(nv => nv.MaLoaiNV == "BH"),
+               "MaNV",
+               "HoTenNV",
+               donHang.NVGiaoHang
+           );
             ViewBag.MaThanhToan = new SelectList(db.ThanhToans, "MaThanhToan", "TenThanhToan", donHang.MaThanhToan);
             ViewBag.MaTrangThai = new SelectList(db.TrangThaiDHs, "TrangThai", "TrangThai", donHang.MaTrangThai);
             return View(donHang);
