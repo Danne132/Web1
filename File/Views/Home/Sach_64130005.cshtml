@@ -52,10 +52,10 @@
                 {
                     <div class="detail__operation">
                         <button class="detail__operation-addCart btn btn-order" type="button" title="Order"
-                                onclick="location.href='@Url.Action("Themgiohang", "Giohang", new { MaSach = @Model.MaSach, @strURL = Request.Url.ToString() })'">
+                                onclick="location.href='@Url.Action("Themgiohang", "GioHang_64130005", new { MaSach = @Model.MaSach, @strURL = Request.Url.ToString() })'">
                             Thêm vào giỏ hàng
                         </button>
-                        <button class="detail__operation-buynow btn" onclick="location.href='@Url.Action("BuyNow", "Giohang", new { MaSach = @Model.MaSach })'">Mua ngay</button>
+                        <button class="detail__operation-buynow btn" onclick="location.href='@Url.Action("BuyNow", "GioHang_64130005", new { MaSach = @Model.MaSach })'">Mua ngay</button>
                     </div>
                 }
                 else
