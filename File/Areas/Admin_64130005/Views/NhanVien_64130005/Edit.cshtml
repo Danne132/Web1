@@ -44,7 +44,8 @@
 
             <div class="form-group col-md-3">
                 <label class="control-label">Ngày sinh </label>
-                @Html.EditorFor(model => model.NgaySinh, new { htmlAttributes = new { @type = "date", @class = "form-control" } })
+                @Html.TextBox("NgaySinh", Model.NgaySinh?.ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date" })
+                @*@Html.EditorFor(model => model.NgaySinh, new { htmlAttributes = new { @type = "date", @class = "form-control" } })*@
                 @Html.ValidationMessageFor(model => model.NgaySinh, "", new { @class = "text-danger" })
 
             </div>
@@ -68,15 +69,19 @@
                 </div>
             </div>
             <div class="form-group col-md-12">
-                <label class="control-label">Ảnh đại diện</label>
+                <label class="control-label">Ảnh sản phẩm</label>
                 <div id="myfileupload">
                     <input type="file" name="file" id="file" style="width: 100%;" />
                     @Html.ValidationMessageFor(model => model.AnhNV, "", new { @class = "text-danger" })
                 </div>
                 <div id="thumbbox">
-                    <img height="450" width="400" alt="Thumb image" id="thumbimage"
-                         style="display: none" />
-                    <a class="removeimg" href="javascript:"></a>
+                    <img height="450"
+                         width="400"
+                         alt="Thumb image"
+                         id="thumbimage"
+                         src="@Url.Content("~/Images/NhanVien/" + Model.AnhNV)"
+                         style="@(string.IsNullOrEmpty(Model.AnhNV) ? "display: none;" : "display: block;")" />
+                    <a class="removeimg" href="javascript:">Xóa ảnh</a>
                 </div>
                 <div id="boxchoice">
                     <a href="javascript:" class="Choicefile">
@@ -93,3 +98,15 @@
         </div>
     }
 </div>
+
+<script>
+    document.getElementById("file").addEventListener("change", function (event) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var image = document.getElementById("thumbimage");
+            image.src = e.target.result; // Gán URL hình ảnh
+            image.style.display = "block"; // Hiển thị ảnh
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    });
+</script>

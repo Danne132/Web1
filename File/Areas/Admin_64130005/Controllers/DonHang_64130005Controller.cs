@@ -49,15 +49,15 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
                 if (order.NgayGiao < DateTime.Now && order.MaTrangThai == "Đang giao hàng")
                 {
                     DonHang editOrder = db.DonHangs.Find(order.MaDH);
-                    editOrder.MaTrangThai = "Hoàn thành";
-                    editOrder.MaThanhToan = null;
+                    editOrder.MaTrangThai = "Đã hủy";
+                    editOrder.MaThanhToan = "TM";
                     db.Entry(editOrder).State = EntityState.Modified;
                     db.SaveChanges();
                 }
             }
             if (String.IsNullOrEmpty(sort))
             {
-                ViewBag.orderList = orderList.OrderBy(s => s.NgayDat);
+                ViewBag.orderList = orderList.OrderBy(s => s.MaTrangThai).ThenBy(s => s.NgayDat).ToList();
             }
             else
             {
@@ -76,7 +76,7 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
                         ViewBag.orderList = orderList.Where(s => s.MaTrangThai == "Đã hủy");
                         break;
                     default:
-                        ViewBag.orderList = orderList.Where(s => s.KhachHang.SDT.ToString().Contains(sort));
+                        ViewBag.orderList = orderList.OrderBy(s => s.MaTrangThai).ThenBy(s => s.NgayDat).ToList();
                         break;
                 }
             }
@@ -139,24 +139,27 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
                 }
                 NhanVien nvsession = (NhanVien)Session["NV"];
                 NhanVien nv = db.NhanViens.Find(nvsession.MaNV);
-                order.MaTrangThai = "Đang giao hàng";
-                order.NgayGiao = DateTime.Now.AddDays(3);
-                order.NVDuyetDon = nv.MaNV;
-                order.NVGiaoHang = donHang.NVGiaoHang;
-                Debug.WriteLine(order.MaDH);
-                Debug.WriteLine(order.MaKH);
                 Debug.WriteLine(order.MaTrangThai);
-                Debug.WriteLine(order.NgayGiao);
-                Debug.WriteLine(order.NVDuyetDon);
-                Debug.WriteLine(order.NVGiaoHang);
-                var orderDetails = db.ChiTietDHs.Where(item => item.MaDH == order.MaDH).ToList();
-
-                foreach (var detail in orderDetails)
+                if(order.MaTrangThai == "Chưa giao hàng")
                 {
-                    Sach product = db.Saches.Find(detail.MaSach);
-                    product.SoLuong -= detail.SoLuong;
-                    product.DaBan += detail.SoLuong;
-                    db.Entry(product).State = EntityState.Modified;
+                    order.MaTrangThai = "Đang giao hàng";
+                    order.NgayGiao = DateTime.Now.AddDays(3);
+                    order.NVDuyetDon = nv.MaNV;
+                    order.NVGiaoHang = donHang.NVGiaoHang;
+                }
+                else if (order.MaTrangThai == "Đang giao hàng")
+                {
+                    order.MaTrangThai = "Hoàn thành";
+
+                    var orderDetails = db.ChiTietDHs.Where(item => item.MaDH == order.MaDH).ToList();
+
+                    foreach (var detail in orderDetails)
+                    {
+                        Sach product = db.Saches.Find(detail.MaSach);
+                        product.SoLuong -= detail.SoLuong;
+                        product.DaBan += detail.SoLuong;
+                        db.Entry(product).State = EntityState.Modified;
+                    }
                 }
                 donHang = order;
                 db.Entry(order).State = EntityState.Modified;

@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Project_64130005.Models.NhanVien>
+﻿@using Project_64130005.Models
+@using PagedList.Mvc;
+@model PagedList.PagedList<Project_64130005.Models.NhanVien>
 
 @{
     ViewBag.Title = "Index";
@@ -27,20 +29,19 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-12 col-md-6">
-
-                    </div>
-                    <div class="col-sm-12 col-md-6">
+                    <div class="col-sm-12 col-md-6 p-0">
                         @* Tìm kiếm nhân viên  *@
-                        @using (Html.BeginForm("Index", "NhanVien_64130005", FormMethod.Get, new { @class = "dataTables_filter d-flex justify-content-end" }))
+                        @using (Html.BeginForm("Index", "NhanVien_64130005", FormMethod.Get, new { @class = "dataTables_filter d-flex justify-content-start" }))
                         {
-                            <label>
+                            <label class="w-50">
                                 Tìm kiếm:
-
                                 @Html.TextBox("searchString", null, new { @class = "form-control form-control-sm", @placeholder = "Nhập họ tên" })
 
                             </label>
                         }
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+
                     </div>
                 </div>
                 <dov class="row">

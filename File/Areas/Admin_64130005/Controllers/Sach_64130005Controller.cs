@@ -27,43 +27,35 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
             const int pageSize = 5;
             int pageNumber = page ?? 1;
 
-            var sachs = db.Saches.ToList();
+            var sachs = db.Saches.AsQueryable(); // Truy vấn ban đầu
 
-            // tìm kiếm sản phẩm 
+            // Tìm kiếm sản phẩm
             if (!String.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
-                ViewBag.searchStr = searchString;
                 sachs = sachs.Where(p => p.TenSach.ToLower().Contains(searchString) ||
-                                                p.TheLoai.TenLoai.ToLower().Contains(searchString))
-                                                .ToList();
+                                         p.TheLoai.TenLoai.ToLower().Contains(searchString));
             }
-            // sắp xếp sản phẩm
-            else
+
+            // Sắp xếp sản phẩm
+            switch (sort)
             {
-                ViewBag.Sort = sort;
-                switch (sort)
-                {
-                    case "pre-sold":
-                        sachs = sachs.Where(p => p.SoLuong < 50 && p.SoLuong > 0).ToList();
-                        break;
-                    case "sold":
-                        sachs = sachs.Where(p => p.SoLuong == 0).ToList();
-                        break;
-                    case "now":
-                        sachs = sachs.OrderByDescending(p => p.NgayChinhSua).ToList();
-                        break;
-                    default:
-                        sachs = sachs.ToList();
-                        break;
-                }
+                case "pre-sold":
+                    sachs = sachs.Where(p => p.SoLuong < 50 && p.SoLuong > 0);
+                    break;
+                case "sold":
+                    sachs = sachs.Where(p => p.SoLuong == 0);
+                    break;
+                case "now":
+                    sachs = sachs.OrderByDescending(p => p.NgayChinhSua);
+                    break;
+                default:
+                    sachs = sachs.OrderBy(p => p.MaSach); // Sắp xếp mặc định
+                    break;
             }
 
 
-            ViewBag.totalPage = Math.Ceiling((double)sachs.Count() / pageSize);
-            ViewBag.sachs = sachs.ToPagedList(pageNumber, pageSize);
-
-            return View(ViewBag.sachs);
+            return View(sachs.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Admin_64130005/Sach_64130005/Details/5
@@ -238,11 +230,19 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
 
         private string LayMaSach(string maLoai)
         {
-            // Đếm số sách thuộc loại này
-            int soLuong = db.Saches.Count(s => s.MaTheLoai == maLoai);
+            var maCuoi = db.Saches
+                           .Where(s => s.MaTheLoai == maLoai && s.MaSach.StartsWith(maLoai))
+                           .OrderByDescending(s => s.MaSach)
+                           .Select(s => s.MaSach)
+                           .FirstOrDefault();
 
-            // Tạo mã sách mới
-            string maSachMoi = $"{maLoai}{(soLuong + 1).ToString("D3")}";
+            int soThuTu = 0;
+            if (maCuoi != null)
+            {
+                string phanSo = maCuoi.Substring(maLoai.Length);
+                soThuTu = int.Parse(phanSo);
+            }
+            string maSachMoi = $"{maLoai}{(soThuTu + 1).ToString("D3")}";
             return maSachMoi;
         }
 

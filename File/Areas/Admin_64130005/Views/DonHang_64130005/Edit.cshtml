@@ -26,7 +26,6 @@
                             <tr>
                                 <th class="so--luong">Mã sản phẩm</th>
                                 <th class="so--luong">Tên sản phẩm</th>
-                                <th class="so--luong">Ảnh</th>
                                 <th class="so--luong">Số lượng</th>
                                 <th class="so--luong">Giá bán</th>
                             </tr>
@@ -39,7 +38,6 @@
                                     <tr>
                                         <td>#@item.Sach.MaSach</td>
                                         <td>@item.Sach.TenSach</td>
-                                        <td><img src="~/Images/SanPham/@Url.Content(item.Sach.MaSach)" alt="" width="50px"></td>
                                         <td>@item.SoLuong</td>
                                         <td>@string.Format("{0:#,0}", item.ThanhTien / item.SoLuong) đ</td>
                                     </tr>
@@ -66,12 +64,21 @@
                         <input class="form-control" type="text" value="@kh.SDT" disabled>
                     </div>
                     <div class="form-group  col-md-12">
+                        <label class="control-label">Tên người nhận</label>
+                        <input class="form-control" type="text" value="@orders.TenNguoiNhan" disabled>
+                    </div>
+                    <div class="form-group  col-md-12">
                         <label class="control-label">Địa chỉ khách hàng</label>
-                        <input class="form-control" type="text" value="@kh.DiaChi" disabled>
+                        <input class="form-control" type="text" value="@orders.DiaChi" disabled>
                     </div>
                     <div class="form-group  col-md-6">
                         <label class="control-label">Nhân viên bán hàng</label>
                         <input class="form-control" type="text" value="@nv.HoTenNV" disabled>
+                    </div>
+                    <div class="form-group  col-md-6">
+                        <label class="control-label">Nhân viên giao hàng</label>
+                        @Html.DropDownList("NVGiaoHang", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.NVGiaoHang, "", new { @class = "text-danger" })
                     </div>
                     <div class="form-group  col-md-6">
                         <label class="control-label">Trạng thái đơn hàng</label>
@@ -82,7 +89,7 @@
 
                     <div class="form-group  col-md-12">
                         <label class="control-label">Hình thức thanh toán</label>
-                        @if (orders.MaThanhToan != null)
+                        @if (orders.MaThanhToan == "ONL")
                         {
                             <input class="form-control" type="text" value="Thanh toán qua cổng VNPAY" disabled>
                         }
@@ -100,6 +107,11 @@
                         @if (orders.MaTrangThai == "Chưa giao hàng")
                         {
                             <input type="submit" value="Xác nhận đơn hàng" class="btn btn-primary luu-san-pham" />
+
+                        }
+                        @if (orders.MaTrangThai == "Đang giao hàng")
+                        {
+                            <input type="submit" value="Xác nhận giao hàng" class="btn btn-primary luu-san-pham" />
 
                         }
                     </div>

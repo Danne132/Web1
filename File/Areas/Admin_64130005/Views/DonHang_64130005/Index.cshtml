@@ -40,8 +40,14 @@
                     </div>
                     <div class="col-sm-2">
 
-                        <a class="btn btn-danger btn-sm" href="@Url.Action("Index","Order",new { sort = "Cancel" })">
+                        <a class="btn btn-danger btn-sm" href="@Url.Action("Index","DonHang_64130005",new { sort = "Cancel" })">
                             Đã hủy
+                        </a>
+                    </div>
+                    <div class="col-sm-2">
+
+                        <a class="btn btn-cancel btn-sm" href="@Url.Action("Index","DonHang_64130005")">
+                            Mặc định
                         </a>
                     </div>
                 </div>
@@ -145,16 +151,24 @@
 
                                 @if (item.MaTrangThai == "Chưa giao hàng")
                                 {
-                                    <button class="btn btn-success btn-sm edit" type="button" title="Sửa"
+                                    <button class="btn btn-warning btn-sm" type="button" title="Sửa"
                                             onclick="location.href='@Url.Action("Edit", "DonHang_64130005",new { MaDH = item.MaDH })'">
                                         Xử lí đơn hàng
                                     </button>
                                 }
+                                @if (item.MaTrangThai == "Đang giao hàng")
+                                {
+                                    <button class="btn btn-success btn-sm edit" type="button" title="Sửa"
+                                            onclick="location.href='@Url.Action("Edit", "DonHang_64130005",new { MaDH = item.MaDH })'">
+                                        Xác nhận giao hàng
+                                    </button>
+
+                                }
                                 @if (item.MaTrangThai == "Hoàn thành" || item.MaTrangThai == "Đã hủy")
                                 {
                                     <button class="btn btn-primary btn-sm user-btn" type="button" title="Xem chi tiết"
-                                            onclick="location.href='@Url.Action("Detail", "DonHang_64130005", new { MaDH = item.MaDH })'">
-                                        <i class="fas fa-info"></i>
+                                            onclick="location.href='@Url.Action("Details", "DonHang_64130005", new { MaDH = item.MaDH })'">
+                                        Xem đơn hàng
                                     </button>
                                 }
                             </td>

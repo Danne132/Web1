@@ -18,27 +18,10 @@
     <div class="grid">
         <nav class="navbar">
             <ul class="navbar__list">
-                <li class="navbar__item navbar__item--separate navbar__has-qr">
-                    Vào cửa hàng trên ứng dụng
-                    <div class="navbar__qr">
-                        <img src="~/assets/img/QR.png" alt="QR code" class="navbar__qr-img">
-                        <div class="navbar__qr-apps">
-                            <a href="" class="navbar__qr-link">
-                                <img src="/assets/img/google_play.png" alt="Google Play"
-                                     class="navbar__qr-download-img">
-                            </a>
-                            <a href="" class="navbar__qr-link">
-                                <img src="/assets/img/app_store.png" alt="App Store"
-                                     class="navbar__qr-download-img">
-                            </a>
-                        </div>
-                    </div>
-
-                </li>
                 <li class="navbar__item">
-                    <span class="navbar__title--no-pointer">Kết nối</span>
-                    <a href="https://www.facebook.com/hieunghiavo.34/" class="navbar__icon-link"><i class="navbar__icon fa-brands fa-facebook"></i></a>
-                    <a href="https://www.instagram.com/vibefree.vn/" class="navbar__icon-link"><i class="navbar__icon fa-brands fa-instagram"></i></a>
+                    <span class="navbar__title--no-pointer" style="color: #044785">Kết nối</span>
+                    <a href="https://www.facebook.com/hoangduyan2004/" class="navbar__icon-link" style="color: #044785 "><i class="navbar__icon fa-brands fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/vibefree.vn/" class="navbar__icon-link" style="color: #044785"><i class="navbar__icon fa-brands fa-instagram"></i></a>
                 </li>
             </ul>
             <ul class="navbar__list">
@@ -94,7 +77,7 @@
                                 }
                             </ul>
                             <footer class="navbar_notify-footer">
-                                <a href="@Url.Action("OrderList","Account")" class="navbar_notify-footer-btn">Xem tất cả</a>
+                                <a href="@Url.Action("OrderList_64130005","KhachHang_64130005")" class="navbar_notify-footer-btn">Xem tất cả</a>
                             </footer>
                         </div>
                     </li>
@@ -110,7 +93,7 @@
                         <li class="navbar__item navbar__item-user">
                             @{ if (kh.AnhKH != null)
                                 {
-                                    <img src="~/Hinh/KhachHang/@Url.Content(kh.AnhKH)"
+                                    <img src="~/Images/KhachHang/@Url.Content(kh.AnhKH)"
                                          alt="" class="navbar__item-user-avt">
                                 }
                                 else
@@ -121,16 +104,16 @@
                             <span class="navbar__item-user-name"> @kh.FullName()</span>
                             <ul class="navbar__item-user-menu">
                                 <li class="navbar__item-user-item">
-                                    <a href="@Url.Action("Profile","Account")"> Tài khoản của tôi</a>
+                                    <a href="@Url.Action("Details","KhachHang_64130005")"> Tài khoản của tôi</a>
                                 </li>
                                 <li class="navbar__item-user-item">
-                                    <a href="@Url.Action("ChangePassword","Account", new {idUser = kh.MaKH })"> Đổi mật khẩu</a>
+                                    <a href="@Url.Action("ChangePassword_64130005","KhachHang_64130005", new {idUser = kh.MaKH })"> Đổi mật khẩu</a>
                                 </li>
                                 <li class="navbar__item-user-item">
-                                    <a href="@Url.Action("OrderList","Account")">Đơn mua</a>
+                                    <a href="@Url.Action("OrderList_64130005","KhachHang_64130005")">Đơn mua</a>
                                 </li>
                                 <li class="navbar__item-user-item">
-                                    <a href="@Url.Action("Logout","Account")" class="btn btn-warning">Đăng xuất</a>
+                                    <a href="@Url.Action("Logout_64130005","KhachHang_64130005")" class="btn btn-warning">Đăng xuất</a>
                                 </li>
 
                             </ul>
@@ -156,7 +139,7 @@
         <div class="header-search">
             <div class="header-search__logo">
                 <a href="~/Home">
-                    <img src="~/Hinh/Product/sss.png" class="header-search__logo-img" />
+                    <img src="~/Images/logo_pn.png" class="header-search__logo-img" />
                 </a>
             </div>
             @* Tìm kiếm sản phẩm theo tên - Thịnh *@
@@ -211,7 +194,7 @@
                                                 </div>
                                                 <div class="header__cart-item-body">
                                                     <span class="header__cart-item-description">Phân loại: @item.TheLoai</span>
-                                                    @Html.ActionLink("Xóa", "Xoagiohang", "Giohang", new { @Idproduct = item.MaSach }, new { @class = "header__cart-item-remove" })
+                                                    @Html.ActionLink("Xóa", "Xoagiohang", "GioHang_64130005", new { @MaSach = item.MaSach }, new { @class = "header__cart-item-remove" })
 
                                                 </div>
                                             </div>
@@ -221,7 +204,7 @@
 
 
                                 <button class="btn btn--primary header__cart-view-cart"
-                                        onclick="location.href='@Url.Action("Index", "Giohang")'">
+                                        onclick="location.href='@Url.Action("Index", "GioHang_64130005")'">
                                     Xem giỏ hàng
                                 </button>
                             </div>
@@ -249,9 +232,7 @@
 
             </div>
 
-
-
         </div>
     </div>
-
+    <div style="background-color: #04478f; width: 100%; height: 10px; margin-top: 10px;"></div>
 </header>

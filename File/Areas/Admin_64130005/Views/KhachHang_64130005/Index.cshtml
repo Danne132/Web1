@@ -16,21 +16,18 @@
     <div class="col-md-12">
         <div class="tile">
             <div class="tile-body">
-
                 <div class="row">
-                    <div class="col-sm-12 col-md-6">
-
-                    </div>
-                    <div class="col-sm-12 col-md-6">
-                        @using (Html.BeginForm("Index", "KhachHang_64130005", FormMethod.Get, new { @class = "dataTables_filter d-flex justify-content-end" }))
+                    <div class="col-sm-12 col-md-6" style="padding:0">
+                        @using (Html.BeginForm("Index", "KhachHang_64130005", FormMethod.Get, new { @class = "dataTables_filter d-flex justify-content-start" }))
                         {
-                            <label>
+                            <label class="w-50">
                                 Tìm kiếm:
-
                                 @Html.TextBox("searchStr", null, new { @class = "form-control form-control-sm", @placeholder = "Email khách hàng" })
-
                             </label>
                         }
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        
                     </div>
                 </div>
                 <dov class="row">

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Project_64130005.Models;
@@ -84,7 +86,8 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
                         byte[] array = ms.GetBuffer();
                     }
                 }
-                nhanVien.AnhNV = anh;   
+                nhanVien.AnhNV = anh;
+                nhanVien.MatKhau = ComonUtils_64130005.HashPassword(nhanVien.MatKhau);
                 db.NhanViens.Add(nhanVien);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -115,12 +118,37 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MaNV,HoTenNV,Email,DiaChi,NgaySinh,GioiTinh,SDT,AnhNV,MatKhau,MaLoaiNV,CreatedAt,UpDatedAt")] NhanVien nhanVien)
+        public async Task<ActionResult> Edit(HttpPostedFileBase file, [Bind(Include = "MaNV,HoTenNV,Email,DiaChi,NgaySinh,GioiTinh,SDT,AnhNV,MatKhau,MaLoaiNV,CreatedAt,UpDatedAt")] NhanVien nhanVien)
         {
             if (ModelState.IsValid)
             {
+                var nhanVienFromDb = db.NhanViens.FirstOrDefault(x => x.MaNV == nhanVien.MaNV);
+                if (nhanVienFromDb == null)
+                {
+                    ModelState.AddModelError("", "Không tìm thấy nhân viên để chỉnh sửa.");
+                    return View(nhanVien);
+                }
+
+                // Nếu không upload file, giữ lại đường dẫn ảnh cũ
+                if (file == null)
+                {
+                    Debug.WriteLine("File upload là null, giữ nguyên ảnh cũ: " + nhanVienFromDb.AnhNV);
+                    nhanVien.AnhNV = nhanVienFromDb.AnhNV;
+                }
+                else
+                {
+                    Debug.WriteLine("File upload không null, tên file: " + file.FileName);
+                    // Xử lý file mới
+                    string pic = System.IO.Path.GetFileName(file.FileName);
+                    string path = System.IO.Path.Combine(Server.MapPath("~/Images/NhanVien"), pic);
+                    file.SaveAs(path);
+                    nhanVien.AnhNV = pic;
+                }
+
+                db.Entry(nhanVienFromDb).State = EntityState.Detached;
+                nhanVien.UpDatedAt = DateTime.Now;
                 db.Entry(nhanVien).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             ViewBag.MaLoaiNV = new SelectList(db.LoaiNVs, "MaLoaiNV", "TenLoaiNV", nhanVien.MaLoaiNV);
@@ -161,15 +189,25 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
             }
             base.Dispose(disposing);
         }
+       
         private string LayMaNV(string maCV)
         {
-            // Đếm số sách thuộc loại này
-            int soLuong = db.NhanViens.Count(s => s.MaLoaiNV == maCV);
+            var maCuoi = db.NhanViens
+                           .Where(s => s.MaLoaiNV == maCV && s.MaNV.StartsWith(maCV))
+                           .OrderByDescending(s => s.MaNV)
+                           .Select(s => s.MaNV)
+                           .FirstOrDefault();
 
-            // Tạo mã sách mới
-            string maSachMoi = $"{maCV}{(soLuong + 1).ToString("D3")}";
+            int soThuTu = 0;
+            if (maCuoi != null)
+            {
+                string phanSo = maCuoi.Substring(maCV.Length);
+                soThuTu = int.Parse(phanSo);
+            }
+            string maSachMoi = $"{maCV}{(soThuTu + 1).ToString("D3")}";
             return maSachMoi;
         }
+
 
     }
 }

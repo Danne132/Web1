@@ -2,6 +2,8 @@
 using Project_64130005.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -19,6 +21,28 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
             {
                 return RedirectToAction("Login_64130005", "Home");
             }
+            var soLuongTheoThang = db.DonHangs
+                .Where(o => o.MaTrangThai == "Hoàn thành")
+                .GroupBy(o => new { o.NgayDat.Value.Month, o.NgayDat.Value.Year })
+                .Select(g => new
+                {
+                    Thang = g.Key.Month,
+                    Nam = g.Key.Year,
+                    SoLuong = g.Sum(o => o.ChiTietDHs.Sum(ct => ct.SoLuong))
+                }).OrderBy(g => g.Nam).ThenBy(g => g.Thang).ToList();
+
+            var soTienTheoThang = db.DonHangs
+                .Where(o => o.MaTrangThai == "Hoàn thành")
+                .GroupBy(o => new { o.NgayDat.Value.Month, o.NgayDat.Value.Year })
+                .Select(g => new
+                {
+                    Thang = g.Key.Month,
+                    Nam = g.Key.Year,
+                    TongTien = g.Sum(o => o.ChiTietDHs.Sum(ct => ct.ThanhTien))
+                }).OrderBy(g => g.Nam).ThenBy(g => g.Thang).ToList();
+
+            ViewBag.ProductCounts = soLuongTheoThang;
+            ViewBag.Revenues = soTienTheoThang;
             return View();
         }
 
@@ -82,6 +106,5 @@ namespace Project_64130005.Areas.Admin_64130005.Controllers
             Session["NV"] = null;
             return RedirectToAction("Login_64130005", "Home");
         }
-
     }
 }
